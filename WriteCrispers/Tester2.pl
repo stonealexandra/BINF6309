@@ -19,6 +19,7 @@ my %kMerHash = ();
 my %last12Counts = ();
 
 sub seqReturn {
+#subroutine to
 #declare scalars to characterize sliding window
 #Set the size of the sliding window
 my $windowSize = 21;
