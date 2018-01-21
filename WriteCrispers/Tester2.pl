@@ -10,23 +10,24 @@ my $seqin = Bio::SeqIO->new(-file => 'dmel-all-chromosome-r6.17.fasta',
                              
 my $seqout = Bio::SeqIO->new( -format => 'fasta',
                                 -file => '>crisprspractice2.fasta');
-                                                             
 
 #hash to store kmers
-my %kMerHash = ();
+my %kMerHash=();
 
 #hash to store occurrences of last 12 positions
 my %last12Counts = ();
 
-sub seqReturn {
-#subroutine to
+my $fastasequence;
+while ( my $seq = $seqin->next_seq() ) {
+$fastasequence = $seq->seq;
+
 #declare scalars to characterize sliding window
 #Set the size of the sliding window
 my $windowSize = 21;
 
 #Set the step size
 my $stepSize  = 1;
-my $seqLength = length($seqin);
+my $seqLength = length($fastasequence);
 
 #for loop to increment the starting position of the sliding window
 #starts at position zero; doesn't move past end of file; advance the window by step size
@@ -39,7 +40,7 @@ for (
 
 	#Get a 21-mer substring from sequenceRef (two $ to deference reference to
 	#sequence string) starting at the window start for length $windowStart
-	my $crisprSeq = substr( $seqin, $windowStart, $windowSize );
+	my $crisprSeq = substr( $fastasequence, $windowStart, $windowSize );
 
 #if the 21-mer ends in GG, create a hash with key=last 12 of k-mer and value is 21-mer
 #Regex where $1 is the crispr, and $2 contains the last 12 of crispr.
@@ -51,7 +52,9 @@ for (
 
 	}
 
-} }
+}
+
+}
 
 #Initialize the CRISPR count to zero
 my $crisprCount = 0;
@@ -67,19 +70,11 @@ for my $last12Seq ( sort (keys %last12Counts) ) {
 		$crisprCount++;
 
 		#Print the CRISPR in FASTA format.
-		my $seq_obj = Bio::Seq->new(-seq=>"$kMerHash{$last12Seq}",
+		my $seq_obj = Bio::Seq->new(-seq=>"$kMerHash{$last12Seq}\n",
                          -display_id => ">crispr_$crisprCount",
-                         -desc => "CRISPR",
-                         -alphabet => "dna" );
-                         
-        while (my $seq_obj = $seqin->next_seq){
-	print $seq_obj->desc, "\n";
-}               
-		#print FASTA_OUT ">crispr_$crisprCount CRISPR\n", "$kMerHash{$last12Seq}\n";
+                         -desc => "CRISPR");
+		$seqout->write_seq($seq_obj);
 	}
 }
-
-
-
 
 
