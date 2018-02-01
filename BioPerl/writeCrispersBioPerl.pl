@@ -20,10 +20,11 @@ GetOptions(
 	help        => sub { pod2usage($usage); },
 ) or pod2usage(2);
 
+unless ($fastain){
 unless ($fastain) {
 	print "Specify file for fasta read\n";
 }
-die $usage;
+die $usage;}
 
 #create input from Bio SeqIO
 $fastain = Bio::SeqIO->new(
