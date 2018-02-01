@@ -1,37 +1,76 @@
 #!/usr/bin/perl
 use warnings;
 use strict;
-
-use Bio::SeqIO;
 use Bio::Seq::Quality;
+use Bio::SeqIO;
+use Getopt::Long;
+use Pod::Usage;
 
-my $left = Bio::SeqIO->new(
+#GLOBALS
+my $left        = '';
+my $right       = '';
+my $interleaved = '';
+my $qual        = 0;
+my $usage       = "\n$0 [options] \n
+Options:
+-left	Left reads
+-right	Right reads
+-qual	Quality score minimum
+-help	Show this message
+\n";
+
+#check the flags
+GetOptions(
+	'left=s'        => \$left,
+	'right=s'       => \$right,
+	'interleaved=s' => \$interleaved,
+	'qual=i'        => \$qual,
+	help            => sub { pod2usage($usage); },
+) or pod2usage(2);
+
+unless ( $left and $right and $qual and $interleaved ) {
+	unless ($left) {
+		print "Specify file for left reads\n";
+	}
+	unless ($right) {
+		print "Specify file for right reads\n";
+	}
+	unless ($interleaved) {
+		print "Specify file for interleaved output\n";
+	}
+	unless ($qual) {
+		print "Specify file for quality score cutoff\n";
+	}
+	die $usage;
+}
+
+$left = Bio::SeqIO->new(
 	-format => 'fastq',
-	-file   => 'Sample.R1.fastq'
+	-file   => $left
 );
 
-my $right = Bio::SeqIO->new(
+$right = Bio::SeqIO->new(
 	-format => 'fastq',
-	-file   => 'Sample.R2.fastq'
+	-file   => $right
 );
 
-my $out = Bio::SeqIO->new(
+$interleaved = Bio::SeqIO->new(
 	-format => 'fastq',
-	-file   => '>Interleaved.fastq'
+	-file   => ">$interleaved"
 );
 
 while ( my $seq_objL = $left->next_seq ) {
 	my $seq_objR = $right->next_seq;
-	$out->write_seq($seq_objL);
-	$out->write_seq($seq_objR);
+	$interleaved->write_seq($seq_objL);
+	$interleaved->write_seq($seq_objR);
 	my $lTrim       = $left->next_seq;
-	my $leftTrimmed = $lTrim->get_clear_range(20);
+	my $leftTrimmed = $lTrim->get_clear_range($qual);
 	$leftTrimmed->desc( $lTrim->desc() );
-	$out->write_seq($leftTrimmed);
+	$interleaved->write_seq($leftTrimmed);
 	my $rTrim        = $right->next_seq;
-	my $rightTrimmed = $rTrim->get_clear_range(20);
+	my $rightTrimmed = $rTrim->get_clear_range($qual);
 	$rightTrimmed->desc( $rTrim->desc() );
-	$out->write_seq($rightTrimmed);
+	$interleaved->write_seq($rightTrimmed);
 }
 
 while ( my $seq_objL = $left->next_seq ) {
@@ -53,4 +92,3 @@ while ( my $seq_objR = $right->next_seq ) {
 	);
 
 }
-
