@@ -2,9 +2,6 @@
 use warnings;
 use strict;
 use Bio::Seq::Quality;
-use Bio::Seq::Quality;
-use Bio::SeqIO;
-use Bio::SeqIO;
 use Bio::SeqIO;
 use Getopt::Long;
 use Pod::Usage;
