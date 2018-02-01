@@ -1,14 +1,33 @@
 #!/usr/bin/perl
 use warnings;
 use strict;
-
-use Bio::Seq;
 use Bio::Seq;
 use Bio::SeqIO;
+use Getopt::Long;
+use Pod::Usage;
+
+#GLOBALS
+my $fastain = '';
+my $usage   = "\n$0 [options] \n
+Options:
+-fastain	Fasta read
+-help	Show this message
+\n";
+
+#check the flags
+GetOptions(
+	'fastain=s' => \$fastain,
+	help        => sub { pod2usage($usage); },
+) or pod2usage(2);
+
+unless ($fastain) {
+	print "Specify file for fasta read\n";
+}
+die $usage;
 
 #create input from Bio SeqIO
-my $seqin = Bio::SeqIO->new(
-	-file   => 'dmel-all-chromosome-r6.17.fasta',
+$fastain = Bio::SeqIO->new(
+	-file   => $fastain,
 	-format => 'fasta'
 );
 
@@ -26,7 +45,7 @@ my %last12Counts = ();
 
 #continue to read
 my $fastasequence;
-while ( my $seq = $seqin->next_seq() ) {
+while ( my $seq = $fastain->next_seq() ) {
 	$fastasequence = $seq->seq;
 
 	#declare scalars to characterize sliding window
@@ -86,3 +105,4 @@ for my $last12Seq ( sort ( keys %last12Counts ) ) {
 		$seqout->write_seq($seq_obj);
 	}
 }
+
