@@ -20,22 +20,17 @@ GetOptions(
 	help        => sub { pod2usage($usage); },
 ) or pod2usage(2);
 
-unless ($fastain){
 unless ($fastain) {
-	print "Specify file for fasta read\n";
+	unless ($fastain) {
+		print "Specify file for fasta read\n";
+	}
+	die $usage;
 }
-die $usage;}
 
 #create input from Bio SeqIO
 $fastain = Bio::SeqIO->new(
 	-file   => $fastain,
 	-format => 'fasta'
-);
-
-#create output from Bio SeqIO
-my $seqout = Bio::SeqIO->new(
-	-format => 'fasta',
-	-file   => '>Crisprs1.fasta'
 );
 
 #hash to store kmers
@@ -45,9 +40,15 @@ my %kMerHash = ();
 my %last12Counts = ();
 
 #continue to read
-my $fastasequence;
-while ( my $seq = $fastain->next_seq() ) {
-	$fastasequence = $seq->seq;
+
+while ( my $seq_obj = $fastain->next_seq() ) {
+	my $seq = $seq_obj->seq;
+
+	processSeq( \$seq );
+}
+
+sub processSeq {
+	my ($seqRef) = @_;
 
 	#declare scalars to characterize sliding window
 	#Set the size of the sliding window
@@ -55,7 +56,7 @@ while ( my $seq = $fastain->next_seq() ) {
 
 	#Set the step size
 	my $stepSize  = 1;
-	my $seqLength = length($fastasequence);
+	my $seqLength = length($$seqRef);
 
 #for loop to increment the starting position of the sliding window
 #starts at position zero; doesn't move past end of file; advance the window by step size
@@ -68,7 +69,7 @@ while ( my $seq = $fastain->next_seq() ) {
 
 	   #Get a 21-mer substring from sequenceRef (two $ to deference reference to
 	   #sequence string) starting at the window start for length $windowStart
-		my $crisprSeq = substr( $fastasequence, $windowStart, $windowSize );
+		my $crisprSeq = substr( $$seqRef, $windowStart, $windowSize );
 
 #if the 21-mer ends in GG, create a hash with key=last 12 of k-mer and value is 21-mer
 #Regex where $1 is the crispr, and $2 contains the last 12 of crispr.
@@ -83,6 +84,12 @@ while ( my $seq = $fastain->next_seq() ) {
 	}
 
 }
+
+#create output from Bio SeqIO
+my $seqio_crisprs = Bio::SeqIO->new(
+	-format => 'fasta',
+	-file   => '>Crisprs1.fasta'
+);
 
 #Initialize the CRISPR count to zero
 my $crisprCount = 0;
@@ -101,8 +108,9 @@ for my $last12Seq ( sort ( keys %last12Counts ) ) {
 		my $seq_obj = Bio::Seq->new(
 			-seq        => "$kMerHash{$last12Seq}\n",
 			-display_id => ">crispr_$crisprCount",
-			-desc       => "CRISPR"
+			-desc       => "CRISPR", 
+			-alphabet => "dna"
 		);
-		$seqout->write_seq($seq_obj);
+		$seqio_crisprs->write_seq($seq_obj);
 	}
 }
