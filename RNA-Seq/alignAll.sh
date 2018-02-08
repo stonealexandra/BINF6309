@@ -1,6 +1,6 @@
 #!/bin/bash
 #Initialize variable to contain the directory of trimmed paired fastq files 
-fastqPath="/home/stone.al/workspace/BINF6309/RNA-Seq/Paired"
+fastqPath="/scratch/AiptasiaMiSeq/fastq/"
 #initialize variable to contain the suffix for the left reads
 leftSuffix=".R1.fastq"
 rightSuffix=".R2.fastq"
@@ -20,5 +20,5 @@ do
         $fastqPath$sampleName$rightSuffix \
         $pairedOutPath$sampleName$leftSuffix \
         $pairedOutPath$sampleName$rightSuffix \
-	#1>Aip02.sam 2>Aip02.err 
+	#1>$sampleName.sam 2>$sampleName.err 
 done
