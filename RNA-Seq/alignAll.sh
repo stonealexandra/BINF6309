@@ -11,14 +11,12 @@ do
 	#Remove the path and left-read suffix from the filename and assign to sampleName
         pathRemoved="${leftInFile/$fastqPath}"
         sampleName="${pathRemoved/$leftSuffix/}"
-	echo nice -n 19 gsnap \
+	nice -n 19 gsnap \
 	-A sam \
 	-s AiptasiaGmapIIT.iit \
 	-D . \
 	-d AiptasiaGmapDb \
-	$fastqPath$sampleName$leftSuffix \
-        $fastqPath$sampleName$rightSuffix \
-        $pairedOutPath$sampleName$leftSuffix \
-        $pairedOutPath$sampleName$rightSuffix \
-	#1>$sampleName.sam 2>$sampleName.err 
+        $fastqPath$sampleName$leftSuffix \
+	$fastqPath$sampleName$rightSuffix \
+	1>$sampleName.sam  
 done
