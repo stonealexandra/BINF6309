@@ -9,8 +9,7 @@ do
         #Remove the path from the filename and assign to sampleName
         pathRemoved="${leftInFile/$bamPath}"
         sampleName="${pathRemoved/$bamSuffix/}"
-        echo samtools index \
+        samtools index \
         $bamPath$sampleName$bamSuffix \
-        -o $bamToBamOutPath.$sampleName.sorted.bam.bai \
-        #1>$sampleName.index.log
+        1>$sampleName.index.log 2>$sampleName.index.err
 done
