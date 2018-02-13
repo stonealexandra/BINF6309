@@ -11,6 +11,6 @@ do
         sampleName="${pathRemoved/$samSuffix/}"
         samtools sort \
 	$samPath$sampleName$samSuffix \
-	-o $samToBamOutPath.$sampleName.sorted.bam \
-	1>$sampleName.sort.log 
+	-o $sampleName.sorted.bam \
+	1>$sampleName.sort.log 2>$sampleName.sort.err  
 done
