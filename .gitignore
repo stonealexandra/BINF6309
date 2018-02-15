@@ -1,4 +1,6 @@
-*.fasta
+*.*
+!*.sh
+!*.pl
 /.metadata/
 /.DS_Store
 *.fastq
