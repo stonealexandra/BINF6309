@@ -2,5 +2,5 @@
 use warnings;
 use strict;
 
-print "Hello Git Edited on Server", "\n";
+print "Hello Git Edited On Server", "\n";
 
