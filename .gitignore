@@ -4,6 +4,13 @@
 !*.sh
 !*.pl
 !.gitignore
+!*.xprs
+!*.matrix
+!*.R
+!*.Rmd
+!*.html
+.Rproj.user
+!*.RProj
 /.metadata/
 /.DS_Store
 *.fastq
@@ -35,3 +42,4 @@ trinity_de-novo/
 *.err
 AiptasiaGmapDb/
 >>>>>>> 3bfa0a3b720b030504acae964de1833c989d87b2
+.Rproj.user
