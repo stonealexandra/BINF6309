@@ -30,6 +30,8 @@ trinity_de-novo/
 !*.sh
 !*.pl
 !.gitignore
+!*.xprs
+!*.matrix
 /.metadata/
 /.DS_Store
 *.fastq
