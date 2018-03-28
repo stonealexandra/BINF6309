@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 *.*
+!*.csv
 !*.sh
 !*.pl
 !.gitignore
+!*.xprs
+!*.matrix
+!*.R
+!*.Rmd
+!*.html
+.Rproj.user
+!*.RProj
 /.metadata/
 /.DS_Store
 *.fastq
@@ -15,3 +24,24 @@
 AiptasiaGmapDb/
 trinity_out_dir/
 trinity_de-novo/
+=======
+*.*
+!*.csv
+!*.sh
+!*.pl
+!.gitignore
+!*.xprs
+!*.matrix
+/.metadata/
+/.DS_Store
+*.fastq
+*.sam
+*.bam
+*.bai
+*.err
+*.iit
+*.log
+*.err
+AiptasiaGmapDb/
+>>>>>>> 3bfa0a3b720b030504acae964de1833c989d87b2
+.Rproj.user
